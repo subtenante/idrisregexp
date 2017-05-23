@@ -1,0 +1,18 @@
+package regexp
+
+modules = Main
+        , Prefix
+        , RegExp
+        , RegExpParser
+        , Search
+        , SmartCons
+        , Substring
+
+executable = igrep
+
+main = Main
+
+sourcedir = src
+
+pkgs = effects
+     , lightyear
