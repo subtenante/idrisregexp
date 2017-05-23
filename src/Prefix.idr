@@ -27,8 +27,7 @@ noPrefixNil : Not (InRegExp [] e) -> Not (Prefix e [])
 noPrefixNil ne (MkPrefix [] zs eq re) = ne re
 noPrefixNil ne (MkPrefix (x :: xs) zs eq re) = lemma_val_not_nil (sym eq)
 
-%default partial
-
+partial
 noPrefixCons : Not (InRegExp [] e) -> Not (Prefix.Prefix (deriv e x) xs) -> Not (Prefix.Prefix e (x :: xs))
 noPrefixCons nnil nder (MkPrefix [] zs eq re) = nnil re
 noPrefixCons nnil nder (MkPrefix (y :: ys) zs eq re) with (lemma_cons_inv eq)
@@ -37,6 +36,7 @@ noPrefixCons nnil nder (MkPrefix (y :: ys) zs eq re) with (lemma_cons_inv eq)
 
 
 -- prefix decidability
+partial
 prefixDec : (e : RegExp) -> (xs : List Nat) -> Dec (Prefix e xs)
 prefixDec e [] with (hasEmptyDec e)
   prefixDec e [] | (Yes prf) = Yes (MkPrefix [] [] Refl prf)

@@ -72,7 +72,7 @@ derivSound {e = (Star e)}{xs = xs}{x = x} pr with (catOptSound (deriv e x) (Star
       = rewrite prf in InStar (InAltR (InCat k z Refl))
 
 
-%default partial
+partial
 derivComplete : InRegExp (x :: xs) e -> InRegExp xs (deriv e x)
 derivComplete {e = Zero}{xs = xs}{x = x} pr = void (inZeroInv pr)
 derivComplete {e = Eps}{xs = xs}{x = x} pr with (inEpsInv pr)

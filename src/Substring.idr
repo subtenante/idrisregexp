@@ -29,8 +29,7 @@ noSubstringCons  npre nsub (MkSubstring (y :: ys) ts zs eq re) with (lemma_cons_
   noSubstringCons  npre nsub (MkSubstring (y :: ys) ts zs eq re) | (Refl, Refl)
     = nsub (MkSubstring ys ts zs Refl re)
 
-%default partial
-
+partial
 subStringDec : (e : RegExp) -> (xs : List Nat) -> Dec (Substring e xs)
 subStringDec e [] with (hasEmptyDec e)
   subStringDec e [] | (Yes prf) = Yes (MkSubstring [] [] [] Refl prf)
