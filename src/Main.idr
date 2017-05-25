@@ -13,6 +13,10 @@ import Substring
 printUsage : {[STDIO]} Eff ()
 printUsage = putStrLn "Usage: igrep [REGEXP] [FILELIST]"
 
+implicit str2regexp : String -> RegExp
+str2regexp s = case (parse pExp s) of
+               Right r => r
+               _       => Zero
 
 search : RegExp -> String -> String
 search e s with (subStringDec e (map toNat (unpack s)))
@@ -60,6 +64,7 @@ process (x :: e :: fs) with (parse pExp e)
   process (x :: e :: fs) | Left err = putStrLn ("Parser error on:" ++ err)
   process (x :: e :: fs) | Right r
           = do
+             printLn (show r)
              ss <- searchFiles r fs
              putStrLn (concat ss)
 

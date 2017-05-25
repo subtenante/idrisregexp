@@ -7,9 +7,19 @@ data RegExp : Type where
   Zero : RegExp
   Eps  : RegExp
   Chr  : Nat -> RegExp
-  Cat  : RegExp -> RegExp -> RegExp 
-  Alt  : RegExp -> RegExp -> RegExp 
-  Star : RegExp -> RegExp 
+  Cat  : RegExp -> RegExp -> RegExp
+  Alt  : RegExp -> RegExp -> RegExp
+  Star : RegExp -> RegExp
+
+Show RegExp where
+  show Zero          = "!"
+  show Eps           = ""
+  show (Chr a)       = the String $ cast (the Char (fromNat a))
+  show (Cat r s)     = show r ++ show s
+  show (Alt Eps s)   = show s ++ "?"
+  show (Alt r   Eps) = show r ++ "?"
+  show (Alt r   s)   = "(" ++ show r ++ "|" ++ show s ++ ")"
+  show (Star r)      = "(" ++ show r ++ ")*"
 
 data InRegExp : List Nat -> RegExp -> Type where
   InEps : InRegExp [] Eps

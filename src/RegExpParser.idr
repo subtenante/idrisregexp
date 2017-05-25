@@ -53,7 +53,7 @@ mutual
   pFactor =  pBrackets <|>| pAtom <|>| pAlt
 
   pTerm : Parser RegExp
-  pTerm = f <$> pFactor <*> (pPlus <|>| pStar <|>| pOpt)
+  pTerm = f <$> pFactor <*> (pOpt <|>| pPlus <|>| pStar)
           where
             f e g = g e
 
