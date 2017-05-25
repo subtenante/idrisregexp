@@ -10,7 +10,7 @@ import SmartCons
 %access public export
 
 pChar : Parser RegExp
-pChar = (Chr . toNat)  <$> noneOf "[]()*+"
+pChar = (Chr . toNat)  <$> noneOf "[]()*+?|"
 
 pAtom : Parser RegExp
 pAtom = foldl1 (.@.) <$> some pChar
@@ -20,6 +20,9 @@ pstar = const star <$> lexeme (char '*')
 
 pPlus : Parser (RegExp -> RegExp)
 pPlus = const (\e => Cat e (star e)) <$> lexeme (char '+')
+
+pOpt : Parser (RegExp -> RegExp)
+pOpt = const (\e => Alt Eps e) <$> lexeme (char '?')
 
 pInBracketsChar : Parser RegExp
 pInBracketsChar = (Chr . toNat) <$> noneOf "[]^"
@@ -31,11 +34,26 @@ pStar : Parser (RegExp -> RegExp)
 pStar = pstar <|> pure id
 
 mutual
+
+  pAlts : Parser (List RegExp)
+  pAlts = char '(' *!> (pExp `sepBy` (char '|')) <* char ')'
+
+  pAltsTree : Parser (List RegExp) -> Parser RegExp
+  pAltsTree ps = do xs <- ps
+                    case xs of
+                         []        => pure Eps
+                         [r]       => pure r
+                         (r :: rs) => do rest <- pAltsTree (pure rs)
+                                         pure (Alt r rest)
+
+  pAlt : Parser RegExp
+  pAlt = pAltsTree pAlts
+
   pFactor : Parser RegExp
-  pFactor =  pBrackets <|>| pAtom <|>| (parens pExp)
+  pFactor =  pBrackets <|>| pAtom <|>| pAlt
 
   pTerm : Parser RegExp
-  pTerm = f <$> pFactor <*> (pPlus <|>| pStar)
+  pTerm = f <$> pFactor <*> (pPlus <|>| pStar <|>| pOpt)
           where
             f e g = g e
 
